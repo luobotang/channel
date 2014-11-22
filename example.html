@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>channel - 示例</title>
+<meta charset="utf-8">
+<style>
+* {
+	margin: 0;
+	padding: 0;
+}
+body {
+	font: 14px/30px arial, 'Microsoft Yahei', sans-serif;
+	color: #333;
+}
+.list,
+.submit,
+.count {
+	position: fixed;
+	bottom: 20px;
+	width: 400px;
+}
+.list {
+	left: 20px;
+	max-height: 600px;
+	overflow: auto;
+}
+.submit {
+	left: 500px;
+}
+.count {
+	left: 900px;
+	width: 200px;
+}
+.words-list {
+	padding: 10px;
+	border: 1px solid #eee;
+}
+.words-list p {
+	margin-bottom: 5px;
+}
+.words-list i {
+	float: right;
+	display: block;
+	width: 30px;
+	text-align: center;
+	font-style: normal;
+	cursor: pointer;
+}
+.words-list i:hover {
+	background: #333;
+	color: #fff;
+}
+input {
+	width: 300px;
+	height: 30px;
+}
+button {
+	height: 30px;
+	width: 80px;
+}
+</style>
+</head>
+<body>
+
+<div class="list words-list">
+</div>
+<div class="submit">
+	<input id="J_words" type="text" placeholder="点击输入您想说的任何话（任何....）">
+	<button id="J_submit_word">提交</button>
+</div>
+<div class="count">
+	计数：<span id="J_num">0</span>
+</div>
+
+<!-- 依赖 jQuery -->
+<script src="http://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
+<script src="channel.js"></script>
+<script type="text/javascript">
+var ch = channel('words'),
+	num = 0;
+
+// 数据 - 对外
+ch.subscribe('add', function (words) {
+	num++;
+	ch.publish('num.change', num);
+});
+ch.subscribe('delete', function () {
+	num--;
+	ch.publish('num.change', num);
+});
+
+// 列表 - 对外
+ch.subscribe('add', function (words) {
+	$('.words-list').append('<p>' + words + '<i>x</i></p>');
+});
+ch.subscribe('num.change', function (num) {
+	$('#J_num').html(num);
+});
+// 列表 - 内部
+$('.words-list').on('click', 'i', function () {
+	$(this).parent().remove();
+	ch.publish('delete');
+});
+
+// 提交 - 内部
+$('#J_submit_word').click(function () {
+	ch.publish('add', $('#J_words').val());
+});
+</script>
+</body>
+</html>
