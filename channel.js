@@ -5,6 +5,7 @@
  * 底层回调函数基于 jQuery 的 Callbacks。
  * version: 0.1
  * author: tangkangxing
+ * @https://github.com/luobotang/channel
  */
 // require jQuery
 (function (factory) {
