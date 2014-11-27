@@ -38,6 +38,8 @@ ch.publish('delete');
 ch.publish('delete');
 ```
 
+点击 [这里](example.html) 查看示例。
+
 使用说明
 ========
 
